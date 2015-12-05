@@ -11,10 +11,11 @@ from twitter import *
 import sys
 import csv
 
-latitude = 51.474144	# geographical centre of search
-longitude = -0.035401	# geographical centre of search
-max_range = 1 			# search range in kilometres
-num_results = 500		# minimum results to obtain
+#44.045954, -123.071081
+latitude = 44.045954	# geographical centre of search
+longitude = -123.071081	# geographical centre of search
+max_range = 16 			# search range in kilometres
+num_results = 1200		# minimum results to obtain
 outfile = "output.csv"
 
 #-----------------------------------------------------------------------
