@@ -15,7 +15,7 @@ import csv
 latitude = 44.045954	# geographical centre of search
 longitude = -123.071081	# geographical centre of search
 max_range = 16 			# search range in kilometres
-num_results = 1200		# minimum results to obtain
+num_results = 1500		# minimum results to obtain
 outfile = "output.csv"
 
 #-----------------------------------------------------------------------
@@ -48,30 +48,38 @@ csvwriter.writerow(row)
 # of which will include 100 matching tweets.
 #-----------------------------------------------------------------------
 result_count = 0
-last_id = None
-while result_count <  num_results:
+last_id = ""
+id = "1"
+#while id != last_id:
+while result_count < 1200:
 	#-----------------------------------------------------------------------
 	# perform a search based on latitude and longitude
 	# twitter API docs: https://dev.twitter.com/docs/api/1/get/search
 	#-----------------------------------------------------------------------
-	query = twitter.search.tweets(q = "", geocode = "%f,%f,%dkm" % (latitude, longitude, max_range), count = 100, max_id = last_id)
+	query = twitter.search.tweets(q = "", geocode = "%f,%f,%dkm" % (latitude, longitude, max_range), count = 200)
 
 	for result in query["statuses"]:
 		#-----------------------------------------------------------------------
 		# only process a result if it has a geolocation
 		#-----------------------------------------------------------------------
-		if result["geo"]:
+		#print result
+		if result.get("geo"):
+			created_ts = result["created_at"]
 			user = result["user"]["screen_name"]
 			text = result["text"]
 			text = text.encode('ascii', 'replace')
 			latitude = result["geo"]["coordinates"][0]
 			longitude = result["geo"]["coordinates"][1]
+			resultstr = str(result)
 
 			# now write this row to our CSV file
-			row = [ user, text, latitude, longitude ]
+			row = [ created_ts, user, text, latitude, longitude, resultstr ]
 			csvwriter.writerow(row)
 			result_count += 1
-		last_id = result["id"]
+
+	last_id = id
+	id = query["statuses"][-1]["id_str"]
+	print last_id, id
 
 	#-----------------------------------------------------------------------
 	# let the user know where we're up to
